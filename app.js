@@ -35,3 +35,8 @@ app.use("/", require("./routes/authRoutes"));
 app.listen(3000, () => {
     console.log("Server running on http://localhost:3000");
 });
+
+app.use("/", require("./routes/authRoutes"));
+app.use("/user", require("./routes/userRoutes"));
+app.use("/salon", require("./routes/salonRoutes"));
+app.use("/admin", require("./routes/adminRoutes"));

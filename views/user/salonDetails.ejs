@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Salon Details</title>
+</head>
+<body>
+
+<h2><%= salon.name %></h2>
+<p>Location: <%= salon.location %></p>
+
+<hr>
+
+<h3>Services</h3>
+
+<% if (services.length === 0) { %>
+    <p>No services available</p>
+<% } %>
+
+<% services.forEach(service => { %>
+    <div style="border:1px solid black; margin:10px; padding:10px;">
+        <h4><%= service.name %></h4>
+        <p>Price: ₹<%= service.price %></p>
+
+        <p>Slots:</p>
+        <% service.slots.forEach(slot => { %>
+            <button><%= slot %></button>
+        <% }) %>
+    </div>
+<% }) %>
+
+</body>
+</html>
