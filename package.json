@@ -1,0 +1,30 @@
+{
+  "name": "salon-booking-app",
+  "version": "1.0.0",
+  "description": "This is an online saloon booking webapp, through which any person can search for any saloon in nearby the location and can book a slot for the service which he/she want like hair cut , beard cut , massage etc",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/shivamishra-02/online-saloon-booking-webapp.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/shivamishra-02/online-saloon-booking-webapp/issues"
+  },
+  "homepage": "https://github.com/shivamishra-02/online-saloon-booking-webapp#readme",
+  "dependencies": {
+    "bcryptjs": "^3.0.3",
+    "body-parser": "^2.2.2",
+    "dotenv": "^17.4.0",
+    "ejs": "^5.0.1",
+    "express": "^5.2.1",
+    "express-session": "^1.19.0",
+    "mongoose": "^9.4.1"
+  }
+}
