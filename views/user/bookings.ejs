@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>My Bookings</title>
+</head>
+<body>
+
+<h2>My Bookings</h2>
+
+<% if (bookings.length === 0) { %>
+    <p>No bookings yet</p>
+<% } %>
+
+<% bookings.forEach(b => { %>
+    <div style="border:1px solid black; margin:10px; padding:10px;">
+        <h4><%= b.salon.name %></h4>
+        <p>Service: <%= b.service.name %></p>
+        <p>Slot: <%= b.slot %></p>
+    </div>
+<% }) %>
+
+</body>
+</html>

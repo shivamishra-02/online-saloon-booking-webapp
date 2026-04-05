@@ -23,7 +23,13 @@
 
         <p>Slots:</p>
         <% service.slots.forEach(slot => { %>
-            <button><%= slot %></button>
+            
+                <form action="/user/book" method="POST" style="display:inline;">
+                    <input type="hidden" name="serviceId" value="<%= service._id %>">
+                    <input type="hidden" name="slot" value="<%= slot %>">
+                    <button type="submit"><%= slot %></button>
+                </form>
+            
         <% }) %>
     </div>
 <% }) %>
