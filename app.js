@@ -17,6 +17,17 @@ app.use(session({
     saveUninitialized: true
 }));
 
+app.use((req, res, next) => {
+    res.locals.user = req.session.user || null;
+    next();
+});
+
+
+app.use((req, res, next) => {
+    res.locals.user = req.user || null;
+    next();
+});
+
 // View Engine
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
@@ -44,3 +55,4 @@ app.use("/admin", require("./routes/adminRoutes"));
 app.get("/", (req, res) => {
     res.render("index");
 });
+

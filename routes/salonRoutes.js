@@ -2,6 +2,8 @@ const express = require("express");
 const router = express.Router();
 const salonController = require("../controllers/salonController");
 
+const { isLoggedIn } = require("../middleware/authMiddleware");
+
 // dashboard
 router.get("/dashboard", salonController.getDashboard);
 
@@ -23,5 +25,12 @@ router.get("/:id/add-service", salonController.getAddService);
 router.post("/:id/add-service", salonController.postAddService);
 
 router.get("/bookings", salonController.getSalonBookings);
+
+
+
+router.get("/dashboard", isLoggedIn, salonController.getDashboard);
+router.get("/bookings", isLoggedIn, salonController.getSalonBookings);
+router.get("/:id/add-service", isLoggedIn, salonController.getAddService);
+router.post("/:id/add-service", isLoggedIn, salonController.postAddService);
 
 module.exports = router;

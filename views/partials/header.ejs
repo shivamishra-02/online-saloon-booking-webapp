@@ -11,10 +11,25 @@
         <a class="navbar-brand" href="/">SalonApp</a>
 
         <div>
-            <a href="/user/search" class="btn btn-outline-light btn-sm">Search</a>
-            <a href="/user/bookings" class="btn btn-outline-light btn-sm">My Bookings</a>
-            <a href="/salon/dashboard" class="btn btn-outline-light btn-sm">Salon</a>
-            <a href="/logout" class="btn btn-danger btn-sm">Logout</a>
+
+            <% if (!user) { %>
+                <!-- Not logged in -->
+                <a href="/login" class="btn btn-outline-light btn-sm">Login</a>
+                <a href="/signup" class="btn btn-success btn-sm">Signup</a>
+
+            <% } else if (user.role === "user") { %>
+                <!-- Normal user -->
+                <a href="/user/search" class="btn btn-outline-light btn-sm">Search</a>
+                <a href="/user/bookings" class="btn btn-outline-light btn-sm">My Bookings</a>
+                <a href="/logout" class="btn btn-danger btn-sm">Logout</a>
+
+            <% } else if (user.role === "salon") { %>
+                <!-- Salon owner -->
+                <a href="/salon/dashboard" class="btn btn-outline-light btn-sm">Dashboard</a>
+                <a href="/logout" class="btn btn-danger btn-sm">Logout</a>
+
+            <% } %>
+
         </div>
     </div>
 </nav>

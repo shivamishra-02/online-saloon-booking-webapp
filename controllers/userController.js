@@ -70,6 +70,10 @@ exports.bookSlot = async (req, res) => {
             return res.send("Slot already booked, choose another one");
         }
 
+        if (!req.session.user) {
+            return res.redirect("/login");
+        }
+
         const booking = new Booking({
             user: req.session.user._id,
             salon: service.salon,
