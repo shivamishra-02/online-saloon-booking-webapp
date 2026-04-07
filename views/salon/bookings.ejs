@@ -2,11 +2,11 @@
 <html>
 <head>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <title>My Bookings</title>
+    <title>Salon Bookings</title>
 </head>
 <body>
 
-<h2>My Bookings</h2>
+<h2>Salon Bookings</h2>
 
 <% if (bookings.length === 0) { %>
     <p>No bookings yet</p>
@@ -14,7 +14,8 @@
 
 <% bookings.forEach(b => { %>
     <div style="border:1px solid black; margin:10px; padding:10px;">
-        <h4><%= b.salon.name %></h4>
+        <h3>Salon: <%= b.salon.name %></h3>
+        <p>User: <%= b.user.name %> (<%= b.user.email %>)</p>
         <p>Service: <%= b.service.name %></p>
         <p>Slot: <%= b.slot %></p>
     </div>

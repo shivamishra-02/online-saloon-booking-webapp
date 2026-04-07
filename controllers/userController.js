@@ -36,7 +36,14 @@ exports.getSalonDetails = async (req, res) => {
         const salon = await Salon.findById(salonId);
         const services = await Service.find({ salon: salonId });
 
-        res.render("user/salonDetails", { salon, services });
+        // 🔥 get all booked slots
+        const bookings = await Booking.find({ salon: salonId });
+
+        res.render("user/salonDetails", {
+            salon,
+            services,
+            bookings
+        });
 
     } catch (err) {
         console.log(err);
@@ -52,6 +59,16 @@ exports.bookSlot = async (req, res) => {
 
     try {
         const service = await Service.findById(serviceId);
+
+        // 🔥 check if slot already booked
+        const existingBooking = await Booking.findOne({
+            service: serviceId,
+            slot: slot
+        });
+
+        if (existingBooking) {
+            return res.send("Slot already booked, choose another one");
+        }
 
         const booking = new Booking({
             user: req.session.user._id,

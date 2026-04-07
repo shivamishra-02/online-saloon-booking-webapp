@@ -1,5 +1,6 @@
 const User = require("../models/User");
 const bcrypt = require("bcryptjs");
+const Salon = require("../models/Salon");
 
 // Signup page
 exports.getSignup = (req, res) => {
@@ -58,8 +59,16 @@ exports.postLogin = async (req, res) => {
         if (user.role === "admin") {
             res.redirect("/admin/dashboard");
         } else if (user.role === "salon") {
-            res.redirect("/salon/dashboard");
-        } else {
+
+            // 🔥 check if salon already exists
+            const salon = await Salon.findOne({ owner: user._id });
+
+            if (!salon) {
+                return res.redirect("/salon/add");
+            }else {
+                return res.redirect("/salon/dashboard");
+        }
+} else {
             res.redirect("/user/dashboard");
         }
 

@@ -1,6 +1,10 @@
 const Salon = require("../models/Salon");
 const Service = require("../models/Service");
 
+const Booking = require("../models/Booking");
+
+// const Salon = require("../models/Salon");
+
 // form show karne ke liye
 exports.getAddSalon = (req, res) => {
     res.render("salon/addSalon");
@@ -53,5 +57,44 @@ exports.postAddService = async (req, res) => {
     } catch (err) {
         console.log(err);
         res.send("Error adding service");
+    }
+};
+
+
+
+// salon bookings
+exports.getSalonBookings = async (req, res) => {
+    try {
+        // 🔥 owner ke salons find karo
+        const salons = await Salon.find({ owner: req.session.user._id });
+
+        const salonIds = salons.map(s => s._id);
+
+        // 🔥 un salons ki bookings lao
+        const bookings = await Booking.find({ salon: { $in: salonIds } })
+            .populate("user")
+            .populate("service")
+            .populate("salon");
+
+        res.render("salon/bookings", { bookings });
+
+    } catch (err) {
+        console.log(err);
+        res.send("Error fetching bookings");
+    }
+};
+
+
+
+// smart dashboard
+exports.getDashboard = async (req, res) => {
+    try {
+        const salon = await Salon.findOne({ owner: req.session.user._id });
+
+        res.render("salon/dashboard", { salon });
+
+    } catch (err) {
+        console.log(err);
+        res.send("Error loading dashboard");
     }
 };
