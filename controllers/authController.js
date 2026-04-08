@@ -1,6 +1,7 @@
 const User = require("../models/User");
 const bcrypt = require("bcryptjs");
 const Salon = require("../models/Salon");
+const transporter = require("../config/mailer");
 
 // Signup page
 exports.getSignup = (req, res) => {
@@ -14,19 +15,32 @@ exports.postSignup = async (req, res) => {
     try {
         const hashedPassword = await bcrypt.hash(password, 10);
 
+        const otp = generateOTP();
+
         const user = new User({
             name,
             email,
             password: hashedPassword,
-            role
+            role,
+            otp,
+            otpExpiry: Date.now() + 5 * 60 * 1000 // 5 min
         });
 
         await user.save();
 
-        res.redirect("/login");
+        // 📧 send email
+        await transporter.sendMail({
+            from: process.env.EMAIL,
+            to: email,
+            subject: "Verify your account",
+            text: `Your OTP is: ${otp}`
+        });
+
+        res.redirect(`/verify?email=${email}`);
+
     } catch (err) {
         console.log(err);
-        res.send("Error in signup");
+        res.send("Signup Error");
     }
 };
 
@@ -50,6 +64,10 @@ exports.postLogin = async (req, res) => {
 
         if (!isMatch) {
             return res.send("Wrong password");
+        }
+
+        if (!user.isVerified) {
+            return res.send("Please verify your email first");
         }
 
         // session store
@@ -83,4 +101,41 @@ exports.logout = (req, res) => {
     req.session.destroy(() => {
         res.redirect("/login");
     });
+};
+
+
+
+function generateOTP() {
+    return Math.floor(100000 + Math.random() * 900000).toString();
+}
+
+
+exports.getVerifyPage = (req, res) => {
+    res.render("verify", { email: req.query.email });
+};
+
+exports.postVerify = async (req, res) => {
+    const { email, otp } = req.body;
+
+    try {
+        const user = await User.findOne({ email });
+
+        if (!user) return res.send("User not found");
+
+        if (user.otp !== otp || user.otpExpiry < Date.now()) {
+            return res.send("Invalid or expired OTP");
+        }
+
+        user.isVerified = true;
+        user.otp = null;
+        user.otpExpiry = null;
+
+        await user.save();
+
+        res.redirect("/login");
+
+    } catch (err) {
+        console.log(err);
+        res.send("Verification error");
+    }
 };
