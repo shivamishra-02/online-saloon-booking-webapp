@@ -1,45 +1,119 @@
 <%- include("../partials/header") %>
 
-<h2><%= salon.name %></h2>
-<p class="text-muted"><%= salon.location %></p>
+<div class="container mt-4">
 
-<hr>
+    <h2><%= salon.name %></h2>
+    <p class="text-muted"><%= salon.location %></p>
 
-<div class="row">
-<% services.forEach(service => { %>
+    <hr>
 
-    <div class="col-md-4">
-        <div class="card mb-3 shadow">
-            <div class="card-body">
-                <h5><%= service.name %></h5>
-                <p>₹<%= service.price %></p>
+    <div class="row">
+    <% services.forEach(service => { %>
 
-                <% service.slots.forEach(slot => { %>
+        <div class="col-md-4">
+            <div class="card mb-3 shadow">
+                <div class="card-body">
+                    <h5><%= service.name %></h5>
+                    <p>₹<%= service.price %></p>
 
-                    <% 
-                        const isBooked = bookings.some(b => 
-                            b.service.toString() === service._id.toString() && b.slot === slot
-                        );
-                    %>
+                    <% service.slots.forEach(slot => { %>
 
-                    <% if (!isBooked) { %>
-                        <form action="/user/book" method="POST" class="d-inline">
-                            <input type="hidden" name="serviceId" value="<%= service._id %>">
-                            <input type="hidden" name="slot" value="<%= slot %>">
-                            <button class="btn btn-success btn-sm mb-1"><%= slot %></button>
-                        </form>
-                    <% } else { %>
-                        <button class="btn btn-secondary btn-sm mb-1" disabled>
-                            <%= slot %>
-                        </button>
-                    <% } %>
+                        <% 
+                            const isBooked = bookings.some(b => 
+                                b.service.toString() === service._id.toString() && b.slot === slot
+                            );
+                        %>
 
-                <% }) %>
+                        <% if (!isBooked) { %>
+
+                            <!-- ✅ RAZORPAY BUTTON -->
+                            <button 
+                                class="btn btn-success btn-sm mb-1"
+                                onclick="payNow('<%= service._id %>', '<%= slot %>', <%= service.price %>)">
+                                <%= slot %>
+                            </button>
+
+                        <% } else { %>
+
+                            <button class="btn btn-secondary btn-sm mb-1" disabled>
+                                <%= slot %>
+                            </button>
+
+                        <% } %>
+
+                    <% }) %>
+
+                </div>
             </div>
         </div>
+
+    <% }) %>
     </div>
 
-<% }) %>
 </div>
+
+<!-- 🔥 RAZORPAY SCRIPT -->
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+
+<script>
+async function payNow(serviceId, slot, price) {
+
+    console.log("PAY CLICKED");
+
+    try {
+        // 🔥 create order
+        const res = await fetch("/user/create-order", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({ serviceId })
+        });
+
+        const data = await res.json();
+        console.log("ORDER DATA:", data);
+
+        const options = {
+            key: data.key,
+            amount: data.amount,
+            currency: "INR",
+            name: "Salon Booking",
+            description: "Service Payment",
+            order_id: data.orderId,
+
+            handler: async function (response) {
+
+                console.log("PAYMENT SUCCESS", response);
+
+                // 🔥 verify + book
+                await fetch("/user/verify-payment", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        serviceId,
+                        slot
+                    })
+                });
+
+                alert("Payment successful & booking done");
+                window.location.href = "/user/bookings";
+            },
+
+            theme: {
+                color: "#28a745"
+            }
+        };
+
+        const rzp = new Razorpay(options);
+        rzp.open();
+
+    } catch (err) {
+        console.log(err);
+        alert("Payment failed to initiate");
+    }
+}
+</script>
 
 <%- include("../partials/footer") %>

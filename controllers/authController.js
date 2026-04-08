@@ -30,11 +30,34 @@ exports.postSignup = async (req, res) => {
 
         // 📧 send email
         await transporter.sendMail({
-            from: process.env.EMAIL,
-            to: email,
-            subject: "Verify your account",
-            text: `Your OTP is: ${otp}`
-        });
+    from: `"Salon Booking App" <${process.env.EMAIL}>`,
+    to: email,
+    subject: "Verify your account",
+    html: `
+    <div style="font-family: Arial, sans-serif; background:#f4f4f4; padding:20px;">
+        
+        <div style="max-width:500px; margin:auto; background:#fff; padding:30px; border-radius:10px; text-align:center;">
+            
+            <h2 style="color:#333;">💈 Salon Booking App</h2>
+            <p style="color:#555;">Verify your email to continue</p>
+
+            <div style="margin:20px 0; padding:15px; background:#000; color:#fff; font-size:24px; letter-spacing:5px; border-radius:8px;">
+                ${otp}
+            </div>
+
+            <p style="color:#777;">This OTP is valid for 5 minutes.</p>
+
+            <hr style="margin:20px 0;">
+
+            <p style="font-size:12px; color:#aaa;">
+                If you didn’t request this, you can ignore this email.
+            </p>
+
+        </div>
+
+    </div>
+    `
+});
 
         res.redirect(`/verify?email=${email}`);
 
@@ -118,12 +141,25 @@ exports.postVerify = async (req, res) => {
     const { email, otp } = req.body;
 
     try {
-        const user = await User.findOne({ email });
+        const cleanEmail = email.trim().toLowerCase();
+
+        console.log("Entered Email:", cleanEmail);
+
+        const user = await User.findOne({ email: cleanEmail });
+
+        console.log("User:", user);
 
         if (!user) return res.send("User not found");
 
-        if (user.otp !== otp || user.otpExpiry < Date.now()) {
-            return res.send("Invalid or expired OTP");
+        const storedOTP = user.otp?.toString();
+        const enteredOTP = otp.toString();
+
+        if (storedOTP !== enteredOTP) {
+            return res.send("Invalid OTP");
+        }
+
+        if (user.otpExpiry < Date.now()) {
+            return res.send("OTP expired");
         }
 
         user.isVerified = true;
