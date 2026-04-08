@@ -69,7 +69,7 @@ exports.postLogin = async (req, res) => {
                 return res.redirect("/salon/dashboard");
         }
 } else {
-            res.redirect("/user/dashboard");
+            res.redirect("/user/search");
         }
 
     } catch (err) {

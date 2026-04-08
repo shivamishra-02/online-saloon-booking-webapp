@@ -16,9 +16,8 @@ router.post("/search", userController.searchSalon);
 router.get("/salon/:id", userController.getSalonDetails);
 
 router.post("/book", userController.bookSlot);
-router.get("/bookings", userController.getBookings);
+router.get("/bookings", isLoggedIn, userController.getBookings);
 
-module.exports = router;
 
 
 
@@ -27,3 +26,5 @@ router.post("/search", isLoggedIn, userController.searchSalon);
 router.get("/salon/:id", isLoggedIn, userController.getSalonDetails);
 router.post("/book", isLoggedIn, userController.bookSlot);
 router.get("/bookings", isLoggedIn, userController.getBookings);
+
+module.exports = router;

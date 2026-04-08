@@ -23,11 +23,6 @@ app.use((req, res, next) => {
 });
 
 
-app.use((req, res, next) => {
-    res.locals.user = req.user || null;
-    next();
-});
-
 // View Engine
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
