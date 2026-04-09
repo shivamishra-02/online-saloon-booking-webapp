@@ -171,11 +171,6 @@ OTP: 1234
 
 ---
 
-## 🤝 Contributors
-
-* Shweta (PPT & Synopsis support)
-
----
 
 ## ⭐ If you like this project
 
