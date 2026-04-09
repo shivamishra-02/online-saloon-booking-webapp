@@ -147,10 +147,7 @@ OTP: 1234
 
 ## 🏗️ Architecture Diagram
 
-```
 ![Diagram](saloon_app.png)
-
-```
 
 ---
 
