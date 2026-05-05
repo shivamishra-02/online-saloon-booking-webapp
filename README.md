@@ -63,6 +63,9 @@ salon-booking-app/
 ├── middleware/
 │
 ├── .env
+├── .env.example
+├── Dockerfile
+├── docker-compose.yml
 ├── app.js
 ├── package.json
 ```
@@ -81,12 +84,14 @@ npm install
 
 ### 2. Environment Variables
 
-Create a `.env` file in the root directory and add:
+Create a `.env` file in the root directory and copy from `.env.example`:
+
+#### 📄 `.env.example`
 
 ```
 PORT=3000
 
-MONGO_URI=your_mongodb_connection_string
+MONGO_URI=mongodb://mongo:27017/salonApp
 
 SESSION_SECRET=your_secret_key
 
@@ -97,9 +102,20 @@ RAZORPAY_KEY_ID=your_key_id
 RAZORPAY_KEY_SECRET=your_secret
 ```
 
+#### 📌 Notes:
+
+* `MONGO_URI`:
+
+  * **Docker:** `mongodb://mongo:27017/salonApp`
+  * **Local MongoDB:** `mongodb://localhost:27017/salonApp`
+* `EMAIL_PASS`: Use Gmail App Password (not normal password)
+* Razorpay keys: Use test keys for development
+
 ---
 
 ### 3. Run the Project
+
+#### ▶️ Normal Run
 
 ```
 npm run dev
@@ -109,6 +125,34 @@ OR
 
 ```
 node app.js
+```
+
+---
+
+## 🐳 Run with Docker (Recommended)
+
+### 🔹 Build & Start Containers
+
+```
+docker-compose up --build
+```
+
+### 🔹 Run in Background
+
+```
+docker-compose up -d --build
+```
+
+### 🔹 Stop Containers
+
+```
+docker-compose down
+```
+
+### 🔹 View Logs
+
+```
+docker-compose logs -f
 ```
 
 ---
@@ -166,7 +210,6 @@ OTP: 1234
 **Shivam Mishra**
 
 ---
-
 
 ## ⭐ If you like this project
 
